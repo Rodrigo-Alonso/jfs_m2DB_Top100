@@ -1,0 +1,46 @@
+--1. Crear tablas
+CREATE TABLE peliculas(
+	id NUMBER,
+	nombre_pelicula VARCHAR2(200),
+	anio_estreno NUMBER,
+	director VARCHAR2(100),
+	PRIMARY KEY (id)
+);
+
+CREATE TABLE reparto(
+	id_pelicula NUMBER,
+	nombre_actor_actriz VARCHAR2(100),
+	FOREIGN KEY (id_pelicula) REFERENCES peliculas(id)
+);
+
+--2. Cargar archivos desde .csv
+SELECT * FROM peliculas;
+SELECT * FROM reparto;
+
+--3. Obtener ID de pelicula "Titanic"
+SELECT id, nombre_pelicula FROM peliculas WHERE nombre_pelicula = 'Titanic';
+
+--4. Consultar a todos los actores que aparecen en la pelicula "Titanic"
+SELECT id_pelicula, nombre_actor_actriz FROM reparto WHERE id_pelicula = 2;
+
+--5. Consultar en cuantas peliculas del top 100 participa Harrison Ford
+SELECT nombre_actor_actriz, count (*) AS total_peliculas FROM reparto WHERE nombre_actor_actriz = 'Harrison Ford';
+
+--Otra forma de relacionar tabla peliculas con reparto para obtener peliculas de "Harrison Ford" y el nombre de la pelicula
+SELECT p.nombre_pelicula, COUNT(p.id) FROM reparto r INNER JOIN peliculas p ON r.id_pelicula = p.id 
+WHERE r.nombre_actor_actriz = 'Harrison Ford' GROUP BY p.nombre_pelicula;
+
+--6. Indicar las peliculas estrenadas entre los años 1990 y 1999 ordenadas por titulo de manera ascendente
+SELECT nombre_pelicula, anio_estreno FROM peliculas 
+WHERE anio_estreno >= 1990 AND anio_estreno <=1999 ORDER BY nombre_pelicula ASC;
+
+--Otra forma de filtrar con rango años
+SELECT nombre_pelicula, anio_estreno FROM peliculas 
+WHERE anio_estreno BETWEEN 1990 AND 1999 ORDER BY nombre_pelicula ASC;
+
+--7. Hacer una consulta SQL que agrupe los titulos con su longitud, la longitud debe ser nombrado para
+--la consulta como "longitud_titulo"
+SELECT nombre_pelicula, LENGTH(nombre_pelicula) AS longitud_titulo FROM peliculas;
+
+--8. Consultar cual es la longitud mas grande entre todos los titulos de las peliculas
+SELECT nombre_pelicula, MAX(LENGTH(nombre_pelicula)) AS longitud_titulo FROM peliculas;
